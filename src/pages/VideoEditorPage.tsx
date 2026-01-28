@@ -145,7 +145,7 @@ const containerVariants = {
       delayChildren: 0.2,
     },
   },
-}
+} as const
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -153,7 +153,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 100,
       damping: 12,
     },
@@ -167,7 +167,7 @@ const buttonVariants = {
     scale: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 200,
       damping: 15,
     },
@@ -182,7 +182,7 @@ const pulseVariants = {
     transition: {
       duration: 2,
       repeat: Infinity,
-      ease: 'easeInOut',
+      ease: 'easeInOut' as const,
     },
   },
 }
@@ -194,7 +194,7 @@ const shimmerVariants = {
     transition: {
       duration: 2,
       repeat: Infinity,
-      ease: 'linear',
+      ease: 'linear' as const,
       repeatDelay: 1,
     },
   },
