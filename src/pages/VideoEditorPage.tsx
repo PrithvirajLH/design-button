@@ -1,6 +1,43 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 
+// Dark mode toggle icons
+const SunIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-5 w-5"
+  >
+    <circle cx="12" cy="12" r="5" />
+    <line x1="12" y1="1" x2="12" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="23" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+    <line x1="1" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="23" y2="12" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+  </svg>
+)
+
+const MoonIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-5 w-5"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+)
+
 // Icons as components
 const ScissorsIcon = () => (
   <svg
@@ -166,6 +203,7 @@ const shimmerVariants = {
 export default function VideoEditorPage() {
   const [activeButton, setActiveButton] = useState<string | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true)
 
   const handleButtonClick = (id: string) => {
     setActiveButton(id)
@@ -174,10 +212,10 @@ export default function VideoEditorPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className={`relative min-h-screen overflow-hidden transition-colors duration-500 ${isDarkMode ? 'bg-slate-950' : ''}`}>
       {/* Animated background blobs */}
       <motion.div
-        className="pointer-events-none absolute -left-32 top-20 h-96 w-96 rounded-full bg-gradient-to-br from-purple-400/30 to-pink-400/30 blur-3xl"
+        className={`pointer-events-none absolute -left-32 top-20 h-96 w-96 rounded-full blur-3xl ${isDarkMode ? 'bg-gradient-to-br from-purple-600/20 to-pink-600/20' : 'bg-gradient-to-br from-purple-400/30 to-pink-400/30'}`}
         animate={{
           x: [0, 30, 0],
           y: [0, -20, 0],
@@ -186,7 +224,7 @@ export default function VideoEditorPage() {
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="pointer-events-none absolute -right-20 top-40 h-80 w-80 rounded-full bg-gradient-to-br from-cyan-400/30 to-blue-400/30 blur-3xl"
+        className={`pointer-events-none absolute -right-20 top-40 h-80 w-80 rounded-full blur-3xl ${isDarkMode ? 'bg-gradient-to-br from-cyan-600/20 to-blue-600/20' : 'bg-gradient-to-br from-cyan-400/30 to-blue-400/30'}`}
         animate={{
           x: [0, -40, 0],
           y: [0, 30, 0],
@@ -195,7 +233,7 @@ export default function VideoEditorPage() {
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="pointer-events-none absolute bottom-20 left-1/3 h-72 w-72 rounded-full bg-gradient-to-br from-amber-400/25 to-orange-400/25 blur-3xl"
+        className={`pointer-events-none absolute bottom-20 left-1/3 h-72 w-72 rounded-full blur-3xl ${isDarkMode ? 'bg-gradient-to-br from-amber-600/15 to-orange-600/15' : 'bg-gradient-to-br from-amber-400/25 to-orange-400/25'}`}
         animate={{
           x: [0, 20, 0],
           y: [0, 40, 0],
@@ -203,6 +241,45 @@ export default function VideoEditorPage() {
         }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
+
+      {/* Dark Mode Toggle Button */}
+      <motion.button
+        className={`fixed right-6 top-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border shadow-lg backdrop-blur-xl transition-colors duration-300 ${
+          isDarkMode 
+            ? 'border-slate-700 bg-slate-800/90 text-amber-400 hover:bg-slate-700' 
+            : 'border-white/50 bg-white/80 text-slate-700 hover:bg-white'
+        }`}
+        onClick={() => setIsDarkMode(!isDarkMode)}
+        whileHover={{ scale: 1.1, rotate: 15 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <AnimatePresence mode="wait">
+          {isDarkMode ? (
+            <motion.div
+              key="sun"
+              initial={{ scale: 0, rotate: -90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, rotate: 90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <SunIcon />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="moon"
+              initial={{ scale: 0, rotate: 90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, rotate: -90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <MoonIcon />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
 
       <motion.div
         className="relative mx-auto flex max-w-5xl flex-col gap-8 px-6 py-12"
@@ -213,22 +290,30 @@ export default function VideoEditorPage() {
         {/* Header */}
         <motion.header variants={itemVariants} className="text-center">
           <motion.div
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/60 px-4 py-2 backdrop-blur-sm"
+            className={`mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm transition-colors duration-300 ${
+              isDarkMode 
+                ? 'border-slate-700 bg-slate-800/60' 
+                : 'border-white/20 bg-white/60'
+            }`}
             whileHover={{ scale: 1.02 }}
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
-            <span className="text-sm font-medium text-slate-600">Video Editor</span>
+            <span className={`text-sm font-medium transition-colors duration-300 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>Video Editor</span>
           </motion.div>
           <h1
-            className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-4xl font-bold text-transparent md:text-5xl"
+            className={`bg-clip-text text-4xl font-bold text-transparent md:text-5xl transition-all duration-300 ${
+              isDarkMode 
+                ? 'bg-gradient-to-r from-white via-slate-200 to-white' 
+                : 'bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900'
+            }`}
             style={{ fontFamily: 'Space Grotesk, ui-sans-serif, system-ui, sans-serif' }}
           >
             Edit Your Video
           </h1>
-          <p className="mx-auto mt-3 max-w-lg text-slate-600">
+          <p className={`mx-auto mt-3 max-w-lg transition-colors duration-300 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
             Professional video editing tools with AI-powered enhancements
           </p>
         </motion.header>
@@ -236,11 +321,15 @@ export default function VideoEditorPage() {
         {/* Video Card */}
         <motion.div
           variants={itemVariants}
-          className="relative mx-auto w-full max-w-3xl"
+          className="relative mx-auto w-full max-w-xl"
         >
           {/* Glow effect behind card */}
           <motion.div
-            className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 blur-2xl"
+            className={`absolute -inset-4 rounded-3xl blur-2xl ${
+              isDarkMode 
+                ? 'bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-cyan-600/30' 
+                : 'bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20'
+            }`}
             animate={{
               opacity: [0.5, 0.8, 0.5],
             }}
@@ -249,8 +338,12 @@ export default function VideoEditorPage() {
           
           {/* Main video card */}
           <motion.div
-            className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/80 to-white/60 p-2 shadow-2xl backdrop-blur-xl"
-            whileHover={{ scale: 1.01 }}
+            className={`relative overflow-hidden rounded-3xl border p-2 shadow-2xl backdrop-blur-xl transition-colors duration-300 ${
+              isDarkMode 
+                ? 'border-slate-700/60 bg-gradient-to-br from-slate-800/90 to-slate-900/90' 
+                : 'border-white/40 bg-gradient-to-br from-white/80 to-white/60'
+            }`}
+            whileHover={{ scale: 1.005 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
             {/* Video preview area */}
@@ -357,88 +450,81 @@ export default function VideoEditorPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
 
-        {/* Action Buttons */}
-        <motion.div
-          className="mx-auto mt-4 flex flex-wrap items-center justify-center gap-6"
-          variants={containerVariants}
-        >
-          {actionButtons.map((button, index) => (
+            {/* Action Buttons - Inside Card */}
             <motion.div
-              key={button.id}
-              variants={buttonVariants}
-              custom={index}
-              className="group relative"
+              className={`mt-2 flex items-center justify-start gap-2 rounded-xl p-2 transition-colors duration-300 ${
+                isDarkMode ? 'bg-slate-800/80' : 'bg-slate-50/80'
+              }`}
+              variants={containerVariants}
             >
-              {/* Glow effect */}
-              <motion.div
-                className={`absolute -inset-2 rounded-3xl bg-gradient-to-r ${button.gradient} opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-60`}
-                animate={activeButton === button.id ? { opacity: [0.6, 1, 0.6] } : {}}
-                transition={{ duration: 0.3 }}
-              />
-              
-              {/* Button card */}
-              <motion.button
-                className="relative flex flex-col items-center gap-3 rounded-2xl border border-white/50 bg-white/80 px-8 py-6 shadow-xl backdrop-blur-sm transition-colors duration-300 hover:bg-white/90"
-                style={{ boxShadow: `0 20px 40px -20px ${button.glow}` }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                onClick={() => handleButtonClick(button.id)}
-              >
-                {/* Icon container with gradient */}
+              {actionButtons.map((button, index) => (
                 <motion.div
-                  className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${button.gradient} text-white shadow-lg`}
-                  whileHover={{ rotate: [0, -10, 10, 0] }}
-                  transition={{ duration: 0.4 }}
+                  key={button.id}
+                  variants={buttonVariants}
+                  custom={index}
+                  className="group relative"
                 >
-                  {button.icon}
-                </motion.div>
-
-                {/* Label */}
-                <span className="text-lg font-semibold text-slate-800">
-                  {button.label}
-                </span>
-
-                {/* Description - shown on hover */}
-                <motion.span
-                  className="text-xs text-slate-500"
-                  initial={{ opacity: 0, height: 0 }}
-                  whileHover={{ opacity: 1, height: 'auto' }}
-                >
-                  {button.description}
-                </motion.span>
-
-                {/* Click ripple effect */}
-                <AnimatePresence>
-                  {activeButton === button.id && (
+                  {/* Glow effect */}
+                  <motion.div
+                    className={`absolute -inset-0.5 rounded-xl bg-gradient-to-r ${button.gradient} opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-40`}
+                    animate={activeButton === button.id ? { opacity: [0.4, 0.6, 0.4] } : {}}
+                    transition={{ duration: 0.3 }}
+                  />
+                  
+                  {/* Button */}
+                  <motion.button
+                    className={`relative flex items-center justify-center rounded-lg border p-2 shadow-md backdrop-blur-sm transition-colors duration-300 ${
+                      isDarkMode 
+                        ? 'border-slate-600/60 bg-slate-700/90 hover:bg-slate-600' 
+                        : 'border-white/60 bg-white/90 hover:bg-white'
+                    }`}
+                    style={{ boxShadow: `0 6px 20px -10px ${button.glow}` }}
+                    whileHover={{ y: -2, scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                    onClick={() => handleButtonClick(button.id)}
+                    title={button.label}
+                  >
+                    {/* Icon container with gradient */}
                     <motion.div
-                      className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${button.gradient}`}
-                      initial={{ opacity: 0.4, scale: 0.8 }}
-                      animate={{ opacity: 0, scale: 1.5 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.6 }}
-                    />
-                  )}
-                </AnimatePresence>
-              </motion.button>
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br ${button.gradient} text-white shadow-sm`}
+                      whileHover={{ rotate: [0, -6, 6, 0], scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="scale-75">{button.icon}</div>
+                    </motion.div>
+
+                    {/* Click ripple effect */}
+                    <AnimatePresence>
+                      {activeButton === button.id && (
+                        <motion.div
+                          className={`absolute inset-0 rounded-lg bg-gradient-to-r ${button.gradient}`}
+                          initial={{ opacity: 0.3, scale: 0.8 }}
+                          animate={{ opacity: 0, scale: 1.3 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.5 }}
+                        />
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
+          </motion.div>
         </motion.div>
 
         {/* Bottom hint */}
         <motion.div
           variants={itemVariants}
-          className="mt-8 text-center"
+          className="text-center"
         >
           <motion.p
-            className="text-sm text-slate-500"
+            className={`text-sm transition-colors duration-300 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
-            ✨ Select a tool to start editing your video
+            ✨ Click a tool above to start editing
           </motion.p>
         </motion.div>
       </motion.div>
